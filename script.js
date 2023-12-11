@@ -1,7 +1,7 @@
 const btn = document.querySelector('.btn-country');
-const container = document.querySelector('.container');
+const countries = document.querySelector('.countries');
 
-function country(name) {
+const getCountryData = function(name) {
     const request = new XMLHttpRequest();
     request.open('GET', `https://restcountries.com/v3.1/name/${name}`);
     request.send();
@@ -15,14 +15,17 @@ function country(name) {
                 <div class="country__data">
                 <h3 class="country__name">${data.name.common}</h3>
                 <h4 class="country__region">${data.region}</h4>
-                <p class="country__row"><span>👫</span>${data.population}</p>
+                <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)} M</p>
                 <p class="country__row"><span>🗣️</span>${Object.values(data.languages)[0]}</p>
                 <p class="country__row"><span>💰</span>${Object.keys(data.currencies)[0]}</p>
                 </div>
             </article>
         `;
-        container.insertAdjacentHTML('beforeend', html);
+        countries.insertAdjacentHTML('beforeend', html);
+        countries.style.opacity = 1;
     });
 }
 
-country('myanmar');
+getCountryData('germany');
+getCountryData('usa');
+getCountryData('portugal');
