@@ -23,8 +23,14 @@ const renderCountry = function (data, className = "") {
     </article>
     `;
   countries.insertAdjacentHTML("beforeend", html);
-  countries.style.opacity = 1;
+  // countries.style.opacity = 1;
 };
+
+const renderError = (msg) => {
+  countries.insertAdjacentText("beforeend", msg);
+  // countries.style.opacity = 1;
+};
+
 //////////////////////////////////////
 //// XMLHttpRequest AJAX Call     ///
 /////////////////////////////////////
@@ -64,23 +70,32 @@ const getCountryAndNeighbour = (country) => {
   fetch(`${countryUrl}/name/${country}`)
     .then((res) => res.json())
     .then((data) => {
-        // render main country
-        const [mainCountry] = data;
-        renderCountry(mainCountry);
+      // render main country
+      const [mainCountry] = data;
+      renderCountry(mainCountry);
 
-        // get neighbour country
-        const neighbour = mainCountry.borders?.[0];
-        // if not exists
-        if(!neighbour) return;
-        // call neighbour country if exists
-        return fetch(`${countryUrl}/alpha/${neighbour}`);
+      // get neighbour country
+      const neighbour = mainCountry.borders?.[0];
+      // if not exists
+      if (!neighbour) return false;
+      // call neighbour country if exists
+      return fetch(`${countryUrl}/alpha/${neighbour}`);
     })
-    .then(response => response.json())
-    .then( data => {
-        // render neighbour country
-        const [neighbourCountry] = data;
-        renderCountry(neighbourCountry, 'neighbour');
+    .then((response) => response.json())
+    .then((data) => {
+      // render neighbour country
+      const [neighbourCountry] = data;
+      renderCountry(neighbourCountry, "neighbour");
     })
-    ;
+    .catch((error) => {
+      console.error(error);
+      renderError(`Something went wrong. ${error.message} error occurred. Try again!!`);
+    })
+    .finally(() => {
+      countries.style.opacity = 1;
+    });
 };
-getCountryAndNeighbour("thai");
+
+btn.addEventListener("click", function () {
+  getCountryAndNeighbour("nepal");
+});
