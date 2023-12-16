@@ -66,9 +66,23 @@ getCountryAndNeighbour('turkey'); */
 //// Promises and the Fetch API Call  ///
 ////////////////////////////////////////
 
-const getCountryAndNeighbour = (country) => {
+const getJSON = (url, errMsg = "Something went wrong") => {
+  return fetch(`${url}`).then((response) => {
+    if (!response.ok) {
+      throw new Error(`${errMsg} (${response.status})`);
+    }
+    return response.json();
+  });
+};
+
+/* const getCountryAndNeighbour = (country) => {
   fetch(`${countryUrl}/name/${country}`)
-    .then((res) => res.json())
+    .then((response) => {
+      if(!response.ok) {
+        throw new Error(`Country not found (${response.status})`);
+      }
+      return response.json();
+    })
     .then((data) => {
       // render main country
       const [mainCountry] = data;
@@ -76,12 +90,18 @@ const getCountryAndNeighbour = (country) => {
 
       // get neighbour country
       const neighbour = mainCountry.borders?.[0];
+
       // if not exists
       if (!neighbour) return false;
       // call neighbour country if exists
       return fetch(`${countryUrl}/alpha/${neighbour}`);
     })
-    .then((response) => response.json())
+    .then((response) => {
+      if(!response.ok) {
+        throw new Error(`Country not found (${response.status})`);
+      }
+      return response.json();
+    })
     .then((data) => {
       // render neighbour country
       const [neighbourCountry] = data;
@@ -89,7 +109,40 @@ const getCountryAndNeighbour = (country) => {
     })
     .catch((error) => {
       console.error(error);
-      renderError(`Something went wrong. ${error.message} error occurred. Try again!!`);
+      renderError(
+        `Something went wrong. ${error.message} error occurred. Try again!!`
+      );
+    })
+    .finally(() => {
+      countries.style.opacity = 1;
+    });
+}; */
+
+const getCountryAndNeighbour = (country) => {
+  getJSON(`${countryUrl}/name/${country}`, "Country not found")
+    .then((data) => {
+      // render main country
+      const [mainCountry] = data;
+      renderCountry(mainCountry);
+
+      // get neighbour country
+      const neighbour = mainCountry.borders?.[0];
+
+      // if not exists
+      if (!neighbour) throw new Error("Neighbour not found");
+      // call neighbour country if exists
+      return getJSON(`${countryUrl}/alpha/${neighbour}`, "Country not found");
+    })
+    .then((data) => {
+      // render neighbour country
+      const [neighbourCountry] = data;
+      renderCountry(neighbourCountry, "neighbour");
+    })
+    .catch((error) => {
+      console.error(error);
+      renderError(
+        `Something went wrong. ${error.message} error occurred. Try again!!`
+      );
     })
     .finally(() => {
       countries.style.opacity = 1;
@@ -97,5 +150,5 @@ const getCountryAndNeighbour = (country) => {
 };
 
 btn.addEventListener("click", function () {
-  getCountryAndNeighbour("nepal");
+  getCountryAndNeighbour("australia");
 });
