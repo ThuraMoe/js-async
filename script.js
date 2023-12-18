@@ -241,4 +241,10 @@ wait(1)
     console.log("2 sec passed");
     return wait(1);
   })
-  .then((res) => console.log("3 sec passed"))
+  .then((res) => console.log("3 sec passed"));
+
+// immediately resolve/reject promise
+Promise.resolve("promise is resolve").then((x) => console.log(x));
+Promise.reject(new Error("Something wrong ⚠")).catch((err) =>
+  console.error(err)
+);
