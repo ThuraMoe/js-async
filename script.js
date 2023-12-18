@@ -200,28 +200,45 @@ new Promise(function (resolve, reject) {
 
 // promise building for lottery drawing
 const lotteryPromise = new Promise((resolve, reject) => {
-  console.log('lottery draw is happening');
+  console.log("lottery draw is happening");
   setTimeout(() => {
-    if(Math.random() >= 0.5) {
-      resolve('You Win 💰'); 
+    if (Math.random() >= 0.5) {
+      resolve("You Win 💰");
     } else {
-      reject('You lose 😥');
+      reject("You lose 😥");
     }
   }, 2000);
 });
 
 // promisifying
-lotteryPromise.then(res => console.log(res))
-.catch(err => console.log(err));
-
+lotteryPromise.then((res) => console.log(res)).catch((err) => console.log(err));
 
 // sample callback hell with setTimeout
-setTimeout(() => {
-  console.log('1 sec passed');
+/* setTimeout(() => {
+  console.log("1 sec passed");
   setTimeout(() => {
-    console.log('2 sec passed');
+    console.log("2 sec passed");
     setTimeout(() => {
-      console.log('3 sec passed');
+      console.log("3 sec passed");
     }, 1000);
   }, 1000);
-}, 1000);
+}, 1000); */
+
+// to solve above setTimeout callback hell
+// we will build a new promise
+const wait = (second) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, second * 1000);
+  });
+};
+
+wait(1)
+  .then((res) => {
+    console.log("1 sec passed");
+    return wait(1);
+  })
+  .then((res) => {
+    console.log("2 sec passed");
+    return wait(1);
+  })
+  .then((res) => console.log("3 sec passed"))
