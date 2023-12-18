@@ -198,3 +198,18 @@ new Promise(function (resolve, reject) {
   .then((res) => console.log(res))
   .catch((err) => console.log(err)); */
 
+// promise building for lottery drawing
+const lotteryPromise = new Promise((resolve, reject) => {
+  console.log('lottery draw is happening');
+  setTimeout(() => {
+    if(Math.random() >= 0.5) {
+      resolve('You Win 💰'); 
+    } else {
+      reject('You lose 😥');
+    }
+  }, 2000);
+});
+
+// promisifying
+lotteryPromise.then(res => console.log(res))
+.catch(err => console.log(err));
