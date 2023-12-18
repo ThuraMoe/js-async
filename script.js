@@ -150,5 +150,38 @@ const getCountryAndNeighbour = (country) => {
 };
 
 btn.addEventListener("click", function () {
-  getCountryAndNeighbour("australia");
+  // getCountryAndNeighbour("australia");
+  const lat = '52.589';
+  const lng = '13.381';
+  whereAmI(lat, lng);
 });
+
+// const myGeoLocation = () => {
+//   if (navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition((pos) =>  {
+//       lat = pos.coords.latitude;
+//       lng = pos.coords.longitude;
+//     });
+//   }
+// };
+
+const whereAmI = (lat, lng) => {
+  token = "248205843103594155420x48684";
+
+  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=${token}`)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.error) throw new Error("Incorrect geolocation");
+      const location = data.country;
+      getCountryAndNeighbour(location);
+    })
+    .catch((error) => {
+      renderError(
+        `Something went wrong. ${error.message} error occurred. Try agin!`
+      );
+    })
+    .finally(() => {
+      countries.style.opacity = 1;
+    });
+};
