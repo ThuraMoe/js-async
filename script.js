@@ -213,3 +213,15 @@ const lotteryPromise = new Promise((resolve, reject) => {
 // promisifying
 lotteryPromise.then(res => console.log(res))
 .catch(err => console.log(err));
+
+
+// sample callback hell with setTimeout
+setTimeout(() => {
+  console.log('1 sec passed');
+  setTimeout(() => {
+    console.log('2 sec passed');
+    setTimeout(() => {
+      console.log('3 sec passed');
+    }, 1000);
+  }, 1000);
+}, 1000);
