@@ -151,8 +151,8 @@ const getCountryAndNeighbour = (country) => {
 
 btn.addEventListener("click", function () {
   // getCountryAndNeighbour("australia");
-  const lat = '52.589';
-  const lng = '13.381';
+  const lat = "52.589";
+  const lng = "13.381";
   whereAmI(lat, lng);
 });
 
@@ -185,3 +185,15 @@ const whereAmI = (lat, lng) => {
       countries.style.opacity = 1;
     });
 };
+
+/* 
+// sample building promises
+new Promise(function (resolve, reject) {
+  if (Math.random() >= 0.5) {
+    resolve("You win");
+  } else {
+    reject("You lose");
+  }
+})
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err)); */
