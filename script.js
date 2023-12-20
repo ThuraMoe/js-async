@@ -159,31 +159,33 @@ const getPosition = () => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
-}
+};
 // promisifying
 const whereAmI = () => {
   getPosition()
-  .then((pos) => {
-    token = "248205843103594155420x48684";
-    const { latitude: lat , longitude: lng} = pos.coords;
-    console.log(lat, lng);
-    return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=${token}`);
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    if (data.error) throw new Error("Incorrect geolocation");
-    const location = data.country;
-    getCountryAndNeighbour(location);
-  })
-  .catch((error) => {
-    renderError(
-      `Something went wrong. ${error.message} error occurred. Try agin!`
-    );
-  })
-  .finally(() => {
-    countries.style.opacity = 1;
-  });
+    .then((pos) => {
+      token = "248205843103594155420x48684";
+      const { latitude: lat, longitude: lng } = pos.coords;
+      console.log(lat, lng);
+      return fetch(
+        `https://geocode.xyz/${lat},${lng}?geoit=json&auth=${token}`
+      );
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.error) throw new Error("Incorrect geolocation");
+      const location = data.country;
+      getCountryAndNeighbour(location);
+    })
+    .catch((error) => {
+      renderError(
+        `Something went wrong. ${error.message} error occurred. Try agin!`
+      );
+    })
+    .finally(() => {
+      countries.style.opacity = 1;
+    });
 };
 
 /* 
@@ -247,3 +249,42 @@ Promise.resolve("promise is resolve").then((x) => console.log(x));
 Promise.reject(new Error("Something wrong ⚠")).catch((err) =>
   console.error(err)
 );
+
+/**
+ * Coding Challenge #2
+ * loading image with Promise
+ */
+let currentImage = "";
+const imageContainer = document.querySelector('.images');
+const createImage = (imgPath) => {
+  return new Promise((resolve, reject) => {
+    const img = document.createElement("img");
+    img.src = imgPath;
+
+    img.addEventListener('load', function() {
+      imageContainer.append(img);
+      resolve(img);
+    });
+    
+    img.addEventListener('error', function() {
+      reject(new Error('Image not found'))
+    })
+  });
+};
+createImage("img/a.jpg")
+  .then((img) => {
+    currentImage = img;
+    return wait(2);
+  })
+  .then(() => {
+    currentImage.style.display = "none";
+    return createImage("img/b.jpg")
+  })
+  .then((img) => {
+    currentImage = img;
+    return wait(2);
+  })
+  .then(() => {
+    currentImage.style.display = "none";
+  })
+  .catch((err) => console.error(err));
