@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script defer src="file-reader.js"></script>
+    <title>File Reader</title>
+    <style>
+      .flex-container {
+        display: flex; /* Use flexbox for layout */
+        flex-direction: column; /* Stack elements vertically */
+        align-items: center; /* Center elements horizontally */
+        justify-content: center; /* Center elements vertically within the container */
+      }
+      #file-content {
+        background-color: #f1f1f1;
+        width: 50%;
+        margin: 10px;
+        padding: 10px;
+        line-height: 16.5px;
+        font-size: 16px;
+        overflow: auto;
+        height: auto;
+      }
+
+      /* Optional styling for better visual presentation */
+      #inputFile {
+        margin-bottom: 10px; /* Add some spacing between elements */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div>
+        <input type="file" id="inputFile" />
+      </div>
+      <div id="file-content"></div>
+    </div>
+  </body>
+</html>
