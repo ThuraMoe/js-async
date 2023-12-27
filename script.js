@@ -23,7 +23,7 @@ const renderCountry = function (data, className = "") {
     </article>
     `;
   countries.insertAdjacentHTML("beforeend", html);
-  // countries.style.opacity = 1;
+  countries.style.opacity = 1;
 };
 
 const renderError = (msg) => {
@@ -149,10 +149,10 @@ const getCountryAndNeighbour = (country) => {
     });
 };
 
-btn.addEventListener("click", function () {
+/* btn.addEventListener("click", function () {
   // getCountryAndNeighbour("australia");
   whereAmI();
-});
+}); */
 
 // building promise to get user current location
 const getPosition = () => {
@@ -161,7 +161,7 @@ const getPosition = () => {
   });
 };
 // promisifying
-const whereAmI = () => {
+/* const whereAmI = () => {
   getPosition()
     .then((pos) => {
       token = "248205843103594155420x48684";
@@ -186,7 +186,7 @@ const whereAmI = () => {
     .finally(() => {
       countries.style.opacity = 1;
     });
-};
+}; */
 
 /* 
 // sample building promises
@@ -201,7 +201,7 @@ new Promise(function (resolve, reject) {
   .catch((err) => console.log(err)); */
 
 // promise building for lottery drawing
-const lotteryPromise = new Promise((resolve, reject) => {
+/* const lotteryPromise = new Promise((resolve, reject) => {
   console.log("lottery draw is happening");
   setTimeout(() => {
     if (Math.random() >= 0.5) {
@@ -210,10 +210,10 @@ const lotteryPromise = new Promise((resolve, reject) => {
       reject("You lose 😥");
     }
   }, 2000);
-});
+}); */
 
 // promisifying
-lotteryPromise.then((res) => console.log(res)).catch((err) => console.log(err));
+// lotteryPromise.then((res) => console.log(res)).catch((err) => console.log(err));
 
 // sample callback hell with setTimeout
 /* setTimeout(() => {
@@ -228,7 +228,7 @@ lotteryPromise.then((res) => console.log(res)).catch((err) => console.log(err));
 
 // to solve above setTimeout callback hell
 // we will build a new promise
-const wait = (second) => {
+/* const wait = (second) => {
   return new Promise((resolve) => {
     setTimeout(resolve, second * 1000);
   });
@@ -243,18 +243,19 @@ wait(1)
     return wait(1);
   })
   .then((res) => console.log("3 sec passed"));
+ */
 
 // immediately resolve/reject promise
-Promise.resolve("promise is resolve").then((x) => console.log(x));
+/* Promise.resolve("promise is resolve").then((x) => console.log(x));
 Promise.reject(new Error("Something wrong ⚠")).catch((err) =>
   console.error(err)
-);
+); */
 
 /**
  * Coding Challenge #2
  * loading image with Promise
  */
-let currentImage = "";
+/* let currentImage = "";
 const imageContainer = document.querySelector('.images');
 const createImage = (imgPath) => {
   return new Promise((resolve, reject) => {
@@ -287,4 +288,36 @@ createImage("img/a.jpg")
   .then(() => {
     currentImage.style.display = "none";
   })
-  .catch((err) => console.error(err));
+  .catch((err) => console.error(err)); */
+
+//////////////////////////////////////////////
+////  Consuming Promises with Async/Await  ///
+/////////////////////////////////////////////
+
+const geocodeToken = "248205843103594155420x48684";
+
+const whereAmI = async () => {
+  try {
+    // get current location via browser
+    const position = await getPosition();
+    const { latitude: lat, longitude: lng } = position.coords;
+
+    // reverse geocoding to get location as country
+    const geolocation = await fetch(
+      `https://geocode.xyz/${lat},${lng}?geoit=json&auth=${geocodeToken}`
+    );
+    if (!geolocation.ok) throw new Error("Problem getting geocoding!")
+    const reverseGeocoding = await geolocation.json();
+    const currentCountry = reverseGeocoding.country;
+
+    // render country
+    const fetchCountry = await fetch(`${countryUrl}/name/${currentCountry}`);
+    if (!fetchCountry.ok) throw new Error("Problem getting country data!")
+    const [country] = await fetchCountry.json();
+    renderCountry(country);
+  } catch (error) {
+    renderError(`Something went wrong! ${error.message}`)
+  }
+};
+
+whereAmI();
