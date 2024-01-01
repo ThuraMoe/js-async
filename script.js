@@ -23,7 +23,7 @@ const renderCountry = function (data, className = "") {
     </article>
     `;
   countries.insertAdjacentHTML("beforeend", html);
-  countries.style.opacity = 1;
+  // countries.style.opacity = 1;
 };
 
 const renderError = (msg) => {
@@ -306,18 +306,51 @@ const whereAmI = async () => {
     const geolocation = await fetch(
       `https://geocode.xyz/${lat},${lng}?geoit=json&auth=${geocodeToken}`
     );
-    if (!geolocation.ok) throw new Error("Problem getting geocoding!")
+    if (!geolocation.ok) throw new Error("Problem getting geocoding!");
     const reverseGeocoding = await geolocation.json();
     const currentCountry = reverseGeocoding.country;
 
     // render country
     const fetchCountry = await fetch(`${countryUrl}/name/${currentCountry}`);
-    if (!fetchCountry.ok) throw new Error("Problem getting country data!")
+    if (!fetchCountry.ok) throw new Error("Problem getting country data!");
     const [country] = await fetchCountry.json();
     renderCountry(country);
+
+    return `You are in ${country.name.official}`;
   } catch (error) {
-    renderError(`Something went wrong! ${error.message}`)
+    renderError(`Something went wrong! ${error.message}`);
+
+    // Reject promise returned from async function
+    // this is need because we need to re-throw error
+    // if we catch this data from another async/await function
+    throw error;
+  } finally {
+    countries.style.opacity = 1;
   }
 };
 
-whereAmI();
+/**
+ * To get return value of async/await function
+ * we can use two ways:
+ * 1. using then() handler
+ * 2. using await() wrap with async
+ */
+
+console.log("1: Will get location");
+// 1st way
+/* whereAmI()
+  .then((returnVal) => console.log(returnVal))
+  .catch((err) => console.error(err.message)); */
+
+// 2nd way
+(async function () {
+  try {
+    const data = await whereAmI();
+    // set to global variable
+    city = data;
+    console.log(`2: ${data}`);
+  } catch (error) {
+    console.error(`2: error -> ${error.message}`);
+  }
+  console.log("3: Finished getting location.");
+})();
