@@ -360,7 +360,7 @@ const whereAmI = async () => {
  * Running Promises in parallel
  */
 
-const get3Countries = async (c1, c2, c3) => {
+/* const get3Countries = async (c1, c2, c3) => {
   try {
     // const [data1] = await getJSON(`${countryUrl}/name/${c1}`);
     // const [data2] = await getJSON(`${countryUrl}/name/${c2}`);
@@ -381,4 +381,40 @@ const get3Countries = async (c1, c2, c3) => {
   }
 }
 get3Countries('myanmar', 'portugal', 'thailand');
+ */
+
+// promise.race
+// it will only return first fullfill or rejected promise
+(async function() {
+  const res = await Promise.race([
+    getJSON(`${countryUrl}/name/italy`),
+    getJSON(`${countryUrl}/name/germany`),
+    getJSON(`${countryUrl}/name/mexico`),
+  ]);
+  console.log(res[0].capital[0])
+})();
+
+// if user has very bad connection 
+// and you want to allow request certain time 
+// then we can use Promise.race like following way
+const timeout = async (sec) => {  
+  return new Promise((_,reject) => {
+    setTimeout(() => {
+      reject(new Error("Request took too long"));
+    }, sec * 1000);
+  });
+}
+// timeout promise will rejected after passing 2 sec
+// if the api request is longer than timeout, it will automatically rejected
+(async function() {
+  try {
+    const data = await Promise.race([
+      getJSON(`${countryUrl}/name/myanmar`),
+      timeout(2)
+    ]);
+    console.log(data[0])
+  } catch (error) {
+    console.error(error.message)
+  }
+})();
 
