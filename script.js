@@ -438,4 +438,4 @@ Promise.any([
   .then((res) => console.log(res))
   .catch((err) => console.error(err.message));
 
-console.log("added one more line from wsl");
+console.log("added one more line from wsl, added from windows");
