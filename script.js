@@ -336,14 +336,14 @@ const whereAmI = async () => {
  * 2. using await() wrap with async
  */
 
-console.log("1: Will get location");
+// console.log("1: Will get location");
 // 1st way
 /* whereAmI()
   .then((returnVal) => console.log(returnVal))
   .catch((err) => console.error(err.message)); */
 
 // 2nd way
-(async function () {
+/* (async function () {
   try {
     const data = await whereAmI();
     // set to global variable
@@ -354,3 +354,31 @@ console.log("1: Will get location");
   }
   console.log("3: Finished getting location.");
 })();
+ */
+
+/**
+ * Running Promises in parallel
+ */
+
+const get3Countries = async (c1, c2, c3) => {
+  try {
+    // const [data1] = await getJSON(`${countryUrl}/name/${c1}`);
+    // const [data2] = await getJSON(`${countryUrl}/name/${c2}`);
+    // const [data3] = await getJSON(`${countryUrl}/name/${c3}`);
+    // console.log([data1.capital, data2.capital, data3.capital]);
+
+    // Promise.all will run all request at once
+    // if one of the request is fail, it will reject all request
+    // it is return all of the fullfill result as array
+    const data = await Promise.all([
+      getJSON(`${countryUrl}/name/${c1}`),
+      getJSON(`${countryUrl}/name/${c2}`),
+      getJSON(`${countryUrl}/name/${c3}`)
+    ]);
+    console.log(data.map(d => d[0].capital[0]));
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+get3Countries('myanmar', 'portugal', 'thailand');
+
