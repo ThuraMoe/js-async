@@ -385,36 +385,45 @@ get3Countries('myanmar', 'portugal', 'thailand');
 
 // promise.race
 // it will only return first fullfill or rejected promise
-(async function() {
+/* (async function () {
   const res = await Promise.race([
     getJSON(`${countryUrl}/name/italy`),
     getJSON(`${countryUrl}/name/germany`),
     getJSON(`${countryUrl}/name/mexico`),
   ]);
-  console.log(res[0].capital[0])
-})();
+  console.log(res[0].capital[0]);
+})(); */
 
-// if user has very bad connection 
-// and you want to allow request certain time 
+// if user has very bad connection
+// and you want to allow request certain time
 // then we can use Promise.race like following way
-const timeout = async (sec) => {  
-  return new Promise((_,reject) => {
+/* const timeout = async (sec) => {
+  return new Promise((_, reject) => {
     setTimeout(() => {
       reject(new Error("Request took too long"));
     }, sec * 1000);
   });
-}
+};
 // timeout promise will rejected after passing 2 sec
 // if the api request is longer than timeout, it will automatically rejected
-(async function() {
+(async function () {
   try {
     const data = await Promise.race([
       getJSON(`${countryUrl}/name/myanmar`),
-      timeout(2)
+      timeout(2),
     ]);
-    console.log(data[0])
+    console.log(data[0]);
   } catch (error) {
-    console.error(error.message)
+    console.error(error.message);
   }
-})();
+})(); */
 
+// Promise.allSettled
+// will return all result no matter it is fullfilled or rejected
+Promise.allSettled([
+  Promise.resolve("Success"),
+  Promise.reject("Error"),
+  Promise.resolve("Another Success"),
+])
+  .then((res) => console.log(res))
+  .catch((err) => console.error(err.message));
