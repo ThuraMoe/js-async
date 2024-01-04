@@ -420,10 +420,20 @@ get3Countries('myanmar', 'portugal', 'thailand');
 
 // Promise.allSettled
 // will return all result no matter it is fullfilled or rejected
-Promise.allSettled([
+/* Promise.allSettled([
   Promise.resolve("Success"),
   Promise.reject("Error"),
   Promise.resolve("Another Success"),
+])
+  .then((res) => console.log(res))
+  .catch((err) => console.error(err.message)); */
+
+// Promise.any [ES2021]
+// it will return the first fullfilled promise and ignore rejected promise
+Promise.any([
+  Promise.resolve("Another Success"),
+  Promise.resolve("Success"),
+  Promise.reject("Error"),
 ])
   .then((res) => console.log(res))
   .catch((err) => console.error(err.message));
